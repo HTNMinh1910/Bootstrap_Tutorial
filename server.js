@@ -30,6 +30,8 @@ const multer = require("multer");
 //   console.log("Application started and Listening on port 3000");
 // });
 
+
+
 // function divideTwo (a,b) {
 //   if (typeof  a == 'number' && typeof  b == 'number') {
 //     return "Result "+ a +" and "+b +": " + (a/b);
@@ -41,6 +43,8 @@ const multer = require("multer");
 //     return "Unexpected result"
 //   }
 // };
+
+
 
 // http.createServer(function (req, res) {
 //   res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -56,6 +60,8 @@ const multer = require("multer");
 //   res.write('\n' +divideTwo(7,4));
 //   return res.end();
 // }).listen(3030);
+
+
 
 // http.createServer(function (req, res) {
 //   res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -75,12 +81,14 @@ const multer = require("multer");
 // }).listen(8080);
 
 
+
+
 // http.createServer(function (req, res) {
 //   if (req.url == '/fileupload') {
 //     var form = new formidable.IncomingForm();
 //     form.parse(req, function (err, fields, files) {
 //       var oldpath = files.filetoupload.filepath;
-//       var newpath = 'C:/Users/Your Name/' + files.filetoupload.originalFilename;
+//       var newpath = 'D:\File Study\Server_Android\Bootstrap_Tutorial' + files.filetoupload.originalFilename;
 //       fs.rename(oldpath, newpath, function (err) {
 //         if (err) throw err;
 //         res.write('File uploaded and moved!');
@@ -88,46 +96,79 @@ const multer = require("multer");
 //       });
 //  });
 //   } else {
-//     fs.readFile('upload.html', function(err, data) {
-//     res.writeHead(200, {'Content-Type': 'text/html'});
-//   });
-//   res.write(data);
-//     return res.end();
+//       fs.readFile('upload.html', function(err, data) {
+//       res.writeHead(200, {'Content-Type': 'text/html'});
+//       res.write(data);
+//       return res.end();
+//     });
+//   }
 // }).listen(8080);
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname));
-app.get("/", function (req, res) {
-  res.sendFile(__dirname + "//upload.html");
-});
 
-var storage = multer.diskStorage({
-  destination:function (req, file, cb) {
-    // if (file.mimetype == "image.jpg"||
-    //   file.mimetype == 'image.png') {
-        cb(null, 'image');
-    // } else {
-      // cb(new Error('not image'), false);
-    // }
-  },
-    filename:function (req, file, cb) {
-      cb(null, Date.now()+'.jpg');
-    }
-});
 
-var upload = multer({storage:storage});
 
-app.post("/", upload.single('filetoupload'), (req, res, next) => {
-  const file = req.file;
-  if (!file) {
-    const err = new Error("Chon mot file");
-    return next(err);
+// upload file to sever use express
+
+http.createServer(function (req, res) {
+  if (req.url == '/upfile') {
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      var oldpath = files.filetoupload.filepath;
+
+      let time = new Date().getTime();
+      console.log(time);
+
+      var newpath = 'D:\.File Study\Server_Android\Bootstrap_Tutorial\image' + time + files.filetoupload.originalFilename;
+
+      fs.rename(oldpath, newpath, function (err) {
+        if (err) throw err;
+        res.write('File uploaded and moved!');
+        res.end();
+      });
+ });
+  } else {
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write('<form action="upfile" method="post" enctype="multipart/form-data">');
+    res.write('<input type="file" name="filetoupload"><br>');
+    res.write('<input type="submit">');
+    res.write('</form>');
+    return res.end();
   }
-  res.send("Upload thanh cong")
-  // const input = req.body.file_to_upload;
+}).listen(8080);
 
-  // // fs.rename()
-  // res.write(input);
-});
 
-app.listen(8080);
+
+
+// upload file to sever use multer
+
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(express.static(__dirname));
+// app.get("/", function (req, res) {
+//   res.sendFile(__dirname + "//upload.html");
+// });
+
+// var storage = multer.diskStorage({
+//   destination:function (req, file, cb) {
+//     // if (file.mimetype == "image.jpg"||
+//     //   file.mimetype == 'image.png') {
+//         cb(null, 'image');
+//     // } else {
+//       // cb(new Error('not image'), false);
+//     // }
+//   },
+//     filename:function (req, file, cb) {
+//       cb(null, Date.now()+'.jpg');
+//     }
+// });
+
+// var upload = multer({storage:storage});
+
+// app.post("/", upload.single('filetoupload'), (req, res, next) => {
+//   const file = req.file;
+//   if (!file) {
+//     const err = new Error("Chon mot file");
+//     return next(err);
+//   }
+//   res.send("Upload thanh cong")
+// });
+// app.listen(8080);
