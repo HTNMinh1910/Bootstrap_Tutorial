@@ -9,7 +9,7 @@ app.set('views', path.join(__dirname, 'views'));
 console.log(path.join(__dirname, 'views'));
 app.listen(8080);
 
-app.get('/home', (req, res) => {
+app.get('/', (req, res) => {
     res.render('home');
 });
 // app.get('/' , (req , res)=>{
